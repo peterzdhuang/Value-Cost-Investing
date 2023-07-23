@@ -5,3 +5,9 @@ print("vcghjkl")
 print("somehting else")
 #wlaterasdjfakdjsf
 print("akdsfjh")
+
+
+def wlater():
+    print("walter")
+
+wlater()
