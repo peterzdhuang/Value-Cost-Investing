@@ -1,4 +1,4 @@
 """=======================================================================
- * API Class 
- * Objective: Fetch the Financial data online
+ * Value Averaging WITH Sell Class
+ * Objective: Calculate the gain for Value Averaging model WIHT SELLING
 ========================================================================"""

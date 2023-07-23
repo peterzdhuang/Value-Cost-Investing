@@ -1,4 +1,4 @@
 """=======================================================================
- * API Class 
- * Objective: Fetch the Financial data online
+ * Main Class
+ * Objective: Analyze the outcome of the three different investment strategies
 ========================================================================"""

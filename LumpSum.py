@@ -1,4 +1,4 @@
 """=======================================================================
  * API Class 
- * Objective: Fetch the Financial data online
+ * Objective: Calculate the gain for the Lump Sum model
 ========================================================================"""
