@@ -11,14 +11,19 @@ class API:
         self.intvl=intvl
         self.prd=prd
 
-        #self.stock = yf.download("vti", interval = "1mo", period = "12mo")
-
         #retrieve the dataframe of the historical price using the ticker
         self.stock = yf.download(self.tkr, interval = self.intvl, period = self.prd)
+        #self.stock = yf.download("VTI", interval = "1mo", period = "1000mo") #putting 1000 months here to get all available data from etf; as like a guaratee
 
-    #return the the closing price as a list of floats
     def closing_price(self):
-        tmp_dict = self.stock.to_dict()
-        return list(tmp_dict["Close"].value())
-    
+        """
+        returns the monthly returns in pandas dataframe through the yfinance library
+        NOTE: the value returned behaves extremely similar to a list
 
+        returns: pandas dataframe
+        """
+
+        self.stock.reset_index(inplace=True)
+
+        return self.stock['Close'] #Only getting the closing price for each month
+    
