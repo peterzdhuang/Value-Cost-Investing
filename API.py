@@ -13,8 +13,12 @@ class API:
 
         #retrieve the dataframe of the historical price using the ticker
         self.stock = yf.download(self.tkr, interval = self.intvl, period = self.prd)
-        #self.stock = yf.download("VTI", interval = "1mo", period = "1000mo") #putting 1000 months here to get all available data from etf; as like a guaratee
-
+        
+        """
+        putting 1000 months here to get all available data from etf; as like a guaratee
+        #self.stock = yf.download("VTI", interval = "1mo", period = "1000mo") 
+        """
+        
     def closing_price(self):
         """
         returns the monthly returns in pandas dataframe through the yfinance library

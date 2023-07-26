@@ -13,6 +13,12 @@ class LumpSum:
 
     #return the profit and annual growth rate of the investment as a list
     def outcome(self):
+        """
+        return the profit and annual growth rate of the investment as a list
+
+        returns: list with float type values
+        """
+
         price_list=API(self.tkr, self.intvl, self.prd).closing_price()
         buying_price=price_list[0]
         selling_price=price_list[len(price_list)-1]
