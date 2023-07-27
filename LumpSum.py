@@ -26,6 +26,6 @@ class LumpSum:
         shares=self.amount/buying_price
         profit=(selling_price-buying_price)*shares
 
-        growth_rate=((selling_price-buying_price)/buying_price)/len(price_list)*12
+        growth_rate= (selling_price/buying_price)**(12/len(price_list))-1
 
         return [profit, growth_rate]
