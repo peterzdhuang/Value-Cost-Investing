@@ -1,6 +1,8 @@
 """=======================================================================
  * API Class 
  * Objective: Fetch the Financial data online
+ *IMPORTANT NOTE: the variable number_of_data represent the number that we must 
+                  exclude from the historical data bc we cannot assume we know the future
 ========================================================================"""
 import yfinance as yf
 import pandas as pd
