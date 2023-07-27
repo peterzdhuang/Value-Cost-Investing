@@ -34,7 +34,7 @@ class API:
 
         self.stock.reset_index(inplace=True)
 
-        return self.stock['Close'] #Only getting the closing price for each month
+        return self.stock['Close'][:-1] #Only getting the closing price for each month
 
     def historical_closing_price(self):
         """
@@ -45,9 +45,9 @@ class API:
         """
 
         self.max_stock.reset_index(inplace=True)
-        return self.max_stock['Close']
+        return self.max_stock['Close'][:-1]
 
-    def compound_return(self):
+    def compound_return(self, number_of_data: int):
         """
         returns the historical compound return
         
@@ -58,29 +58,29 @@ class API:
         growth_rate=[]
         inception_price=historical_price[0]
 
-        #minus one because the last value is not of the monthly index
-        for index in range(1, len(historical_price)-1):
-      
+        #minus the length of compare_price because we cannot assume we know the future price at the point we start investing
+        for index in range(1, len(historical_price)-len(number_of_data)):
+            
             growth_rate.append((historical_price[index]/inception_price)**(12/index)-1)
             
         return growth_rate
         
     
-    def standard_deviation(self):
+    def standard_deviation(self, number_of_data: int):
         """
         returns standard deviation
         
         returns: float
         """
-        return np.std(self.compound_return())
+        return np.std(self.compound_return(number_of_data))
     
-    def mean(self):
+    def mean(self, number_of_data: int):
         """
         returns mean
         
         returns: float
         """
-        return np.mean(self.compound_return())
+        return np.mean(self.compound_return(number_of_data))
     
     def z_score(self, value_compared: float):
         """
@@ -88,5 +88,5 @@ class API:
         
         returns: float
         """
-        return  (value_compared - self.mean) / self.standard_deviation
+        return  (value_compared - self.mean()) / self.standard_deviation()
     
