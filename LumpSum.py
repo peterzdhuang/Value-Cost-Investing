@@ -6,7 +6,10 @@
 from API import API
 class LumpSum:
     def __init__(self, amount: float, tkr: str, intvl: str, prd: str):
-        self.amount=amount
+
+        #ASSUME we are investing for 10 years 
+        #MUST CHANGE
+        self.amount=amount*10*12
         self.tkr=tkr
         self.intvl = intvl
         self.prd=prd
@@ -20,6 +23,7 @@ class LumpSum:
         """
 
         price_list=API(self.tkr, self.intvl, self.prd).closing_price()
+        
         buying_price=price_list[0]
         selling_price=price_list[len(price_list)-1]
         
@@ -29,3 +33,4 @@ class LumpSum:
         growth_rate= (selling_price/buying_price)**(12/len(price_list))-1
 
         return [profit, growth_rate]
+

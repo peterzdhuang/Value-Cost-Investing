@@ -19,8 +19,15 @@ class API:
         self.period=period
 
         #retrieve the dataframe of the historical price using the ticker
-        self.stock = yf.download(self.ticker, interval = self.interval, period = self.period)
-        self.max_stock = yf.download(self.ticker, interval = self.interval, period = "max")
+        stock_tmp = yf.download(self.ticker, interval = self.interval, period = self.period)
+        stock_tmp.reset_index(inplace=True)
+        self.stock=stock_tmp['Close'][:-1] #Only getting the closing price for each month
+
+        max_stock_tmp = yf.download(self.ticker, interval = self.interval, period = "max")
+        max_stock_tmp.reset_index(inplace=True)
+        self.max_stock=max_stock_tmp['Close'][:-1]
+
+        #print(max_stock_tmp, "trdkjhgyghbjnk")
         """
         putting 1000 months here to get all available data from etf; as like a guaratee
         #self.stock = yf.download("VTI", interval = "1mo", period = "1000mo") 
@@ -33,10 +40,7 @@ class API:
 
         returns: pandas dataframe
         """
-
-        self.stock.reset_index(inplace=True)
-
-        return self.stock['Close'][:-1] #Only getting the closing price for each month
+        return self.stock
 
     def historical_closing_price(self):
         """
@@ -46,8 +50,7 @@ class API:
         returns: pandas dataframe
         """
 
-        self.max_stock.reset_index(inplace=True)
-        return self.max_stock['Close'][:-1]
+        return self.max_stock
 
     def compound_return(self, number_of_data: int):
         """
@@ -55,19 +58,19 @@ class API:
         
         returns: list
         """
-
-        historical_price=self.historical_closing_price()
+        
+        historical_price=self.max_stock
         growth_rate=[]
         inception_price=historical_price[0]
-
+        
         #minus the length of compare_price because we cannot assume we know the future price at the point we start investing
-        for index in range(1, len(historical_price)-len(number_of_data)):
+        for index in range(1, (len(historical_price)-number_of_data)):
             
-            growth_rate.append((historical_price[index]/inception_price)**(12/index)-1)
-            
+            #growth_rate.append((historical_price[index]/inception_price)**(12/index)-1)
+            growth_rate.append((historical_price[index]-inception_price)/inception_price/(index/12))
         return growth_rate
         
-    
+    #not used
     def standard_deviation(self, number_of_data: int):
         """
         returns standard deviation
@@ -76,6 +79,7 @@ class API:
         """
         return np.std(self.compound_return(number_of_data))
     
+    #not used
     def mean(self, number_of_data: int):
         """
         returns mean
@@ -84,6 +88,7 @@ class API:
         """
         return np.mean(self.compound_return(number_of_data))
     
+    #not used
     def z_score(self, value_compared: float):
         """
         returns z-score
