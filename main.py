@@ -9,7 +9,7 @@ from ValueAveragingWithSell import ValueAveragingWithSell
 
 def main():
     LIST_OF_ETF = ["vt", "vti", "vv","ijs", "vxus", "vea", "vemax"] #comment out for testing
-    #LIST_OF_ETF = ["vti"]
+    #LIST_OF_ETF = ["vemax"]
     #Should be VEMAX not VEM 
     """XIU and AVDV do not have 10 years data, so excluded for now"""
 

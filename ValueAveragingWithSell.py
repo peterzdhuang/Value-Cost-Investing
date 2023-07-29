@@ -77,7 +77,7 @@ class ValueAveragingWithSell:
             mean=self.get_mean(number_of_data)
             z_score=-1
             #z_score=self.get_z_score(self.get_return_rate(number_of_data)[-1], mean, std)
-            #print(z_score, 'z-score')
+            #print(self.get_z_score(self.get_return_rate(number_of_data)[-1], mean, std), 'z-score')
             #print(mean, "mean")
             #print(std, "standard deviation")
             self.total_amount+=self.amount
