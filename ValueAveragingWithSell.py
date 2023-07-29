@@ -3,6 +3,8 @@
  * Objective: Calculate the gain for Value Averaging model WIHT SELLING
 ========================================================================"""
 from API import API
+from Graph import NormalDistribution, ScatterPlot
+import matplotlib.pyplot as plt
 import numpy as np
 
 class ValueAveragingWithSell:
@@ -11,11 +13,12 @@ class ValueAveragingWithSell:
         self.total_amount=0 #Total amount of money invested in the account
         self.prior_savings=0 #Total amount of money not used to invest yet
         self.shares=0 #Amount of shares in the account after a transection
+        self.ticker=ticker
 
         self.monthly_investment=[] #Record of the count of shares in the account after each invesetments
         self._shares=[]
 
-        self.api=API(ticker, interval, period)
+        self.api=API(self.ticker, interval, period)
         self.closing_price=self.api.closing_price()
 
         self.index=0 #For the iteration of self.closing_price
@@ -64,15 +67,15 @@ class ValueAveragingWithSell:
         """
 
         number_of_data=len(self.closing_price)
-        
+
         #print(self.get_return_rate(number_of_data)) 
         
         while number_of_data>1:
-            
+           
             std=self.get_std(number_of_data)
            
             mean=self.get_mean(number_of_data)
-            z_score=-0.3
+            z_score=-1
             #z_score=self.get_z_score(self.get_return_rate(number_of_data)[-1], mean, std)
             #print(z_score, 'z-score')
             #print(mean, "mean")
@@ -81,9 +84,9 @@ class ValueAveragingWithSell:
 
             if z_score<0:
 
-                if z_score<-1:
+                if z_score<=-1:
                     
-                    self.buy(self, self.amount+self.prior_savings)
+                    self.buy(self.amount+self.prior_savings)
                     self.prior_savings=0
                     
                 else:
@@ -95,7 +98,7 @@ class ValueAveragingWithSell:
                 pass
             elif z_score>0:
                 
-                if z_score>1:
+                if z_score>=1:
 
                     self.sell(self.shares)
                 else:
@@ -105,20 +108,18 @@ class ValueAveragingWithSell:
                     self.sell(int(self.shares*0.9))
 
             else:
-
+                
                 #SHOULD MAYBE CHANGE
                 self.prior_savings+=self.amount
             
             self.index+=1
             number_of_data-=1
-
-
+        
         selling_price=self.closing_price[len(self.closing_price)-1]
-        buying_price=self.closing_price[0]
-   
+
         profit = (self.shares*selling_price+self.prior_savings)-self.total_amount
-    
-        growth_rate=(selling_price/buying_price)**(12/len(self.monthly_investment))-1
+      
+        growth_rate=((profit+self.total_amount)/self.total_amount)**(12/len(self.closing_price))-1
 
         return [profit, growth_rate]
     
@@ -132,12 +133,22 @@ class ValueAveragingWithSell:
         
         
     def buy(self, amount):
+        """
+        Carry out the action of buying
+        
+        return: None
+        """
 
         self.shares+=amount/self.closing_price[self.index]
         self.monthly_investment.append(self.shares)
 
 
     def sell(self, shares):
+        """
+        Carry out the action of selling
+        
+        returns: None
+        """
 
         self.prior_savings+=shares*self.closing_price[self.index]
         
@@ -146,6 +157,12 @@ class ValueAveragingWithSell:
         self.monthly_investment.append(self.shares)
 
     def outlier_discard_result(self, data_tmp):
+        """
+        returns a list that does not contain the outliers
+        
+        returns: list with float values
+        """
+
         data=np.array(data_tmp)
         #print(data)
         Q1 = np.percentile(data, 25)
@@ -157,4 +174,36 @@ class ValueAveragingWithSell:
 
         return data[(data >= lower_bound) & (data <= upper_bound)]
 
-    
+    def test_graph(self):
+        """
+        print out the normal distribution and scatter plot for the data
+        
+        returns: None
+        """
+
+        #number of data is the number of data to exclude
+        number_of_data=1
+        
+        historical_return=self.outlier_discard_result(self.api.compound_return(number_of_data))
+
+        mean=self.get_mean(number_of_data)
+        std=self.get_std(number_of_data)
+        
+        normal_distribution=NormalDistribution(mean, std, historical_return, self.ticker)
+        scatter_plot=ScatterPlot(historical_return, self.ticker)
+
+        plt.figure(figsize=(12, 6))
+
+        #scatter plot for first subplot
+        plt.subplot(1, 2, 1)
+        scatter_plot.graph()
+
+        #normal distribution for second subplot
+        plt.subplot(1, 2, 2)
+        normal_distribution.graph()
+
+        #final adjustment for the layout
+        plt.tight_layout()
+
+        plt.show()
+

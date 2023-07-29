@@ -8,7 +8,8 @@ from LumpSum import LumpSum
 from ValueAveragingWithSell import ValueAveragingWithSell
 
 def main():
-    LIST_OF_ETF = ["vt", "vti", "vv","ijs", "vxus", "vea", "vemax"]
+    LIST_OF_ETF = ["vt", "vti", "vv","ijs", "vxus", "vea", "vemax"] #comment out for testing
+    #LIST_OF_ETF = ["vti"]
     #Should be VEMAX not VEM 
     """XIU and AVDV do not have 10 years data, so excluded for now"""
 
@@ -22,6 +23,8 @@ def main():
 
         lump_sum=LumpSum(monthly_amount, ticker, interval, period)
         VAwSell=ValueAveragingWithSell(monthly_amount, ticker, interval, period)
+        
+        VAwSell.test_graph()
 
         lump_sum_outcome[ticker]=lump_sum.outcome()
         VAwSell_outcome[ticker]=VAwSell.outcome()
