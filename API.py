@@ -23,15 +23,10 @@ class API:
         stock_tmp.reset_index(inplace=True)
         self.stock=stock_tmp['Close'][:-1] #Only getting the closing price for each month
 
+        #retrieves all of the monthly returns for a ticker
         max_stock_tmp = yf.download(self.ticker, interval = self.interval, period = "max")
         max_stock_tmp.reset_index(inplace=True)
         self.max_stock=max_stock_tmp['Close'][:-1]
-
-        #print(max_stock_tmp, "trdkjhgyghbjnk")
-        """
-        putting 1000 months here to get all available data from etf; as like a guaratee
-        #self.stock = yf.download("VTI", interval = "1mo", period = "1000mo") 
-        """
         
     def closing_price(self):
         """
@@ -52,7 +47,7 @@ class API:
 
         return self.max_stock
 
-    def compound_return(self, number_of_data: int):
+    def compound_return(self, number_of_data: int): 
         """
         returns the historical compound return
         
@@ -61,14 +56,17 @@ class API:
         
         historical_price=self.max_stock
         growth_rate=[]
-        inception_price=historical_price[0]
+        inception_price=historical_price[0] #WALTER shouldnt you compare prices from month to month, not compare it with the initial price. ex. u compare the percentage change from nov to dec not percentage change from nov to jan
         
         #minus the length of compare_price because we cannot assume we know the future price at the point we start investing
         for index in range(1, (len(historical_price)-number_of_data)):
             
             #growth_rate.append((historical_price[index]/inception_price)**(12/index)-1)
             growth_rate.append((historical_price[index]-inception_price)/inception_price/(index/12))
+
         return growth_rate
+    
+    
         
     #not used
     def standard_deviation(self, number_of_data: int):

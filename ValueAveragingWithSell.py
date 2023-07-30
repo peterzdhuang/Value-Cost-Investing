@@ -72,7 +72,7 @@ class ValueAveragingWithSell:
         
         while number_of_data>1:
            
-            std=self.get_std(number_of_data)
+            std=self.get_std(number_of_data) #WALTER: look here why are you calculating mean and std everytime? 
            
             mean=self.get_mean(number_of_data)
             z_score=-1
